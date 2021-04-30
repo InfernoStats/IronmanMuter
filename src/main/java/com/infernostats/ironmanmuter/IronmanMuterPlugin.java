@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
+import net.runelite.api.events.OverheadTextChanged;
 import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -64,6 +65,24 @@ public class IronmanMuterPlugin extends Plugin
 					intStack[intStackSize - 3] = 0;
 				}
 		}
+	}
+
+	@Subscribe
+	public void onOverheadTextChanged(OverheadTextChanged event)
+	{
+		Actor actor = event.getActor();
+
+		if (!(actor instanceof Player))
+		{
+			return;
+		}
+
+		if (!shouldBlock(actor.getName()))
+		{
+			return;
+		}
+
+		event.getActor().setOverheadText("");
 	}
 
 	private boolean shouldBlock(final String playerName)
